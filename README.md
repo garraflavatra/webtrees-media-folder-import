@@ -14,10 +14,10 @@ You can now specify the name of the folder which contains the files that you wan
 
 Additionally, specify the title you want to give your imported media objects. The following replacements will be performed:
 
-* {index} is replaced with the index of the file (e.g. 1).
-* {counter} is replaced with a counter (e.g. 000001).
-* {basename} is replaced with the base name of the file (e.g. photo.jpg).
-* {filename} is replaced with the name of the file (e.g. photo).
+* `{index}` is replaced with the index of the file (e.g. 1).
+* `{counter}` is replaced with a counter (e.g. 000001).
+* `{basename}` is replaced with the base name of the file (e.g. photo.jpg).
+* `{filename}` is replaced with the name of the file (e.g. photo).
 
 You can optionally specify additional fields (i.e. media type, notes and restriction) that will be the same for all imported files.
 
