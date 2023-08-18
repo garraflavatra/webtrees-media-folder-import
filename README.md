@@ -10,7 +10,7 @@ Download an archive of [the latest release](https://github.com/garraflavatra/web
 
 Go to the administration panel, select a tree and click on the "Media object" link under "Add unlinked records". Select "An entire folder on the server".
 
-You can now specify the name of the folder which contains the files that you want to import. It's also possible to search for a folder by using the autocomplete feature.
+You can now specify the name of the folder which contains the files that you want to import. Subdirectories are not included. If an included file is already exists as a media object in your tree, it will be skipped to prevent double media objects. It's also possible to search for a folder by using the autocomplete feature.
 
 Additionally, specify the title you want to give your imported media objects. The following replacements will be performed:
 

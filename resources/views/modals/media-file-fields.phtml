@@ -65,14 +65,19 @@ use Fisharebest\Webtrees\Tree;
             <option value="unused">
                 <?= I18N::translate('A file on the server') ?>
             </option>
+            <?php endif ?>
             <option value="folder">
                 <?= I18N::translate('An entire folder on the server') ?>
             </option>
-            <?php endif ?>
             <option value="url">
                 <?= /* I18N: URL = web address */ I18N::translate('A URL') ?>
             </option>
         </select>
+        <small class="text-muted d-none file-location file-location-folder">
+            <?= I18N::translate('This will import all files in the specified folder.') ?>
+            <?= I18N::translate('Subdirectories are not included.') ?>
+            <?= I18N::translate('If an included file is already exists as a media object in your tree, it will be skipped to prevent double media objects.') ?>
+        </small>
     </div>
 </div>
 
