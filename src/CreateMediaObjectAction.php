@@ -134,7 +134,13 @@ class CreateMediaObjectAction implements RequestHandlerInterface
             $file_index = 0;
 
             foreach ($files as $listing) {
+
                 $file_path = $listing->path();
+
+                // Skip the file if it is already linked to a media object
+                $is_new = array_key_exists($file_path, $this->media_file_service->unusedFiles($tree));
+                if (!$is_new) continue;
+
                 $human_index = strval($file_index + 1);
 
                 // Replace variable parts of title
@@ -159,17 +165,20 @@ class CreateMediaObjectAction implements RequestHandlerInterface
                 $file_index++;
             }
 
-            // value and text are for autocomplete
-            // html is for interactive modals
-            return response([
-                'value' => '@' . $first_record->xref() . '@',
-                'text'  => view('selects/media', ['media' => $first_record]),
-                'html'  => view('modals/record-created', [
-                    'title' => I18N::translate('The media objects have been created'),
-                    'name'  => $first_record->fullName(),
-                    'url'   => $first_record->url(),
-                ]),
-            ]);
+            if ($first_record) {
+                return response([
+                    'value' => '@' . $first_record->xref() . '@',
+                    'text'  => view('selects/media', ['media' => $first_record]),
+                    'html'  => view('modals/record-created', [
+                        'title' => I18N::translate('The media objects have been created'),
+                        'name'  => $first_record->fullName(),
+                        'url'   => $first_record->url(),
+                    ]),
+                ]);
+            }
+
+            // No files inserted
+            return response(['error_message' => I18N::translate('No objects have been created, because all files in the folder are already linked to a media object in the tree.')]);
         }
 
         // Regular import
