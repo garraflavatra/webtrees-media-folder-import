@@ -86,7 +86,7 @@ class MediaFolderImportModule extends AbstractModule implements ModuleCustomInte
      */
     public function customModuleLatestVersionUrl(): string
     {
-        return 'https://github.com/garraflavatra/webtrees-media-folder-import/raw/main/latest-version.txt';
+        return 'https://github.com/garraflavatra/webtrees-media-folder-import/raw/main/resources/latest-version.txt';
     }
 
     /**
