@@ -1,0 +1,4 @@
+# Ignore these files from ZIP download:
+.gitattributes                export-ignore
+.gitignore                    export-ignore
+resources/latest-version.txt  export-ignore
