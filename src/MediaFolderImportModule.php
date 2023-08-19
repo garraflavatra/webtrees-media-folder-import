@@ -119,7 +119,7 @@ class MediaFolderImportModule extends AbstractModule implements ModuleCustomInte
     public function boot(): void
     {
         // Register the custom CreateMediaObjectAction handler
-        $router_container = Registry::container()->get(RouterContainer::class);
+        $router_container = app(RouterContainer::class);
         $routes = $router_container->getMap()->getRoutes();
         $class_to_replace = OldCreateMediaObjectAction::class;
 
