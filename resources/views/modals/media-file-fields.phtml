@@ -48,7 +48,11 @@ use Fisharebest\Webtrees\Tree;
  * @var array<int|string,string> $media_types
  * @var Tree                     $tree
  * @var array<string,string>     $unused_files
+ * @var bool                     $is_admin
  */
+
+// Default value for $is_admin
+if (!isset($is_admin)) $is_admin = false;
 
 ?>
 
@@ -61,18 +65,24 @@ use Fisharebest\Webtrees\Tree;
             <option value="upload">
                 <?= I18N::translate('A file on your computer') ?>
             </option>
+
             <?php if (!empty($unused_files)) : ?>
-            <option value="unused">
-                <?= I18N::translate('A file on the server') ?>
-            </option>
+                <option value="unused">
+                    <?= I18N::translate('A file on the server') ?>
+                </option>
             <?php endif ?>
-            <option value="folder">
-                <?= I18N::translate('An entire folder on the server') ?>
-            </option>
+
+            <?php if ($is_admin) : ?>
+                <option value="folder">
+                    <?= I18N::translate('An entire folder on the server') ?>
+                </option>
+            <?php endif ?>
+
             <option value="url">
                 <?= /* I18N: URL = web address */ I18N::translate('A URL') ?>
             </option>
         </select>
+
         <small class="text-muted d-none file-location file-location-folder">
             <?= I18N::translate('This will import all files in the specified folder.') ?>
             <?= I18N::translate('Subdirectories are not included.') ?>

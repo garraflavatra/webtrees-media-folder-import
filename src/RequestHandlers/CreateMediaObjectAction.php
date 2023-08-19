@@ -36,9 +36,10 @@
 
 declare(strict_types=1);
 
-namespace Garraflavatra\Webtrees\Module\MediaFolderImportModule;
+namespace Garraflavatra\Webtrees\Module\MediaFolderImportModule\RequestHandlers;
 
 use Fig\Http\Message\StatusCodeInterface;
+use Fisharebest\Webtrees\Auth;
 use Fisharebest\Webtrees\I18N;
 use Fisharebest\Webtrees\Media;
 use Fisharebest\Webtrees\Registry;
@@ -124,6 +125,11 @@ class CreateMediaObjectAction implements RequestHandlerInterface
         $type          = Registry::elementFactory()->make('OBJE:FILE:FORM:TYPE')->canonical($type);
         $restriction   = Registry::elementFactory()->make('OBJE:RESN')->canonical($restriction);
 
+        // Check if this request is made from the control panel
+        $path          = $request->getUri()->getPath();
+        $user          = Validator::attributes($request)->user();
+        $is_admin      = str_starts_with($path, "/admin") && Auth::isAdmin($user);
+
         /** @var StorageAttributes */
         $first_record = null;
 
@@ -170,9 +176,10 @@ class CreateMediaObjectAction implements RequestHandlerInterface
                     'value' => '@' . $first_record->xref() . '@',
                     'text'  => view('selects/media', ['media' => $first_record]),
                     'html'  => view('modals/record-created', [
-                        'title' => I18N::translate('The media objects have been created'),
-                        'name'  => $first_record->fullName(),
-                        'url'   => $first_record->url(),
+                        'title'    => I18N::translate('The media objects have been created'),
+                        'name'     => $first_record->fullName(),
+                        'url'      => $first_record->url(),
+                        'is_admin' => $is_admin,
                     ]),
                 ]);
             }
@@ -191,9 +198,10 @@ class CreateMediaObjectAction implements RequestHandlerInterface
             'value' => '@' . $record->xref() . '@',
             'text'  => view('selects/media', ['media' => $record]),
             'html'  => view('modals/record-created', [
-                'title' => I18N::translate('The media object has been created'),
-                'name'  => $record->fullName(),
-                'url'   => $record->url(),
+                'title'    => I18N::translate('The media object has been created'),
+                'name'     => $record->fullName(),
+                'url'      => $record->url(),
+                'is_admin' => $is_admin,
             ]),
         ]);
     }

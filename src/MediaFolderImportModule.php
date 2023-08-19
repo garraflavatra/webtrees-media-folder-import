@@ -23,13 +23,18 @@ declare(strict_types=1);
 namespace Garraflavatra\Webtrees\Module\MediaFolderImportModule;
 
 use Aura\Router\RouterContainer;
+use Fisharebest\Webtrees\Http\RequestHandlers\AddMediaFileModal as OldAddMediaFileModal;
 use Fisharebest\Webtrees\Http\RequestHandlers\CreateMediaObjectAction as OldCreateMediaObjectAction;
+use Fisharebest\Webtrees\Http\RequestHandlers\CreateMediaObjectModal as OldCreateMediaObjectModal;
 use Fisharebest\Webtrees\I18N;
 use Fisharebest\Webtrees\Module\AbstractModule;
 use Fisharebest\Webtrees\Module\ModuleCustomInterface;
 use Fisharebest\Webtrees\Module\ModuleCustomTrait;
 use Fisharebest\Webtrees\Registry;
 use Fisharebest\Webtrees\View;
+use Garraflavatra\Webtrees\Module\MediaFolderImportModule\RequestHandlers\AddMediaFileModal;
+use Garraflavatra\Webtrees\Module\MediaFolderImportModule\RequestHandlers\CreateMediaObjectAction;
+use Garraflavatra\Webtrees\Module\MediaFolderImportModule\RequestHandlers\CreateMediaObjectModal;
 
 /**
  * A webtrees module that adds the possibility to import many media files at
@@ -123,18 +128,27 @@ class MediaFolderImportModule extends AbstractModule implements ModuleCustomInte
             ? Registry::container(RouterContainer::class)
             : app(RouterContainer::class);
         $routes = $router_container->getMap()->getRoutes();
-        $class_to_replace = OldCreateMediaObjectAction::class;
 
+        // We need to replace the routes manually, since it is not possible to
+        // overwrite them using the router.
         foreach ($routes as $class_name => $route) {
-            if ($class_name == $class_to_replace) {
-                $routes[$class_to_replace]->handler(CreateMediaObjectAction::class);
-                break;
+            if ($class_name == OldAddMediaFileModal::class) {
+                $routes[OldAddMediaFileModal::class]->handler(AddMediaFileModal::class);
+            }
+            if ($class_name == OldCreateMediaObjectAction::class) {
+                $routes[OldCreateMediaObjectAction::class]->handler(CreateMediaObjectAction::class);
+            }
+            if ($class_name == OldCreateMediaObjectModal::class) {
+                $routes[OldCreateMediaObjectModal::class]->handler(CreateMediaObjectModal::class);
             }
         }
 
-        // Register custom template
+        // Register custom templates
         View::registerNamespace($this->name(), $this->resourcesFolder() . 'views/');
+        View::registerCustomView('::modals/add-media-file', $this->name() . '::modals/add-media-file');
+        View::registerCustomView('::modals/create-media-object', $this->name() . '::modals/create-media-object');
         View::registerCustomView('::modals/media-file-fields', $this->name() . '::modals/media-file-fields');
+        View::registerCustomView('::modals/media-object-fields', $this->name() . '::modals/media-object-fields');
     }
 
     // /**

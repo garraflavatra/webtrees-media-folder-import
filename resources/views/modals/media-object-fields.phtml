@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * webtrees: online genealogy
+ * Media folder import plugin
+ *
+ * Copyright (C) 2023 Romein van Buren
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * This file contains code that is derived from webtrees
+ * Copyright (C) 2023 webtrees development team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+declare(strict_types=1);
+
+use Fisharebest\Webtrees\I18N;
+use Fisharebest\Webtrees\Tree;
+
+/**
+ * @var string                   $max_upload_size
+ * @var array<int|string,string> $media_types
+ * @var Tree                     $tree
+ * @var array<string,string>     $unused_files
+ * @var bool                     $is_admin
+ */
+
+?>
+
+<?= view('modals/media-file-fields', [
+    'max_upload_size' => $max_upload_size,
+    'media_file'      => null,
+    'media_types'     => $media_types,
+    'tree'            => $tree,
+    'unused_files'    => $unused_files,
+    'is_admin'        => $is_admin,
+]) ?>
+
+<div class="row mb-3">
+    <label class="col-form-label col-sm-2" for="media-note">
+        <?= I18N::translate('Note') ?>
+    </label>
+    <div class="col-sm-10">
+        <textarea class="form-control" id="media-note" name="media-note" rows="5" dir="auto"></textarea>
+    </div>
+</div>
+
+<?= view('modals/restriction-fields') ?>
