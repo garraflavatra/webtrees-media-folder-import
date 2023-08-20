@@ -22,9 +22,6 @@ declare(strict_types=1);
 
 namespace Garraflavatra\Webtrees\Module\MediaFolderImportModule;
 
-require __DIR__ . '/src/RequestHandlers/AddMediaFileModal.php';
-require __DIR__ . '/src/RequestHandlers/CreateMediaObjectAction.php';
-require __DIR__ . '/src/RequestHandlers/CreateMediaObjectModal.php';
-require __DIR__ . '/src/MediaFolderImportModule.php';
+require __DIR__ . '/MediaFolderImportModule.php';
 
 return new MediaFolderImportModule();

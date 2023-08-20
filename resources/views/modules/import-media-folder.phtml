@@ -1,0 +1,172 @@
+<?php
+
+/**
+ * webtrees: online genealogy
+ * Media folder import plugin
+ *
+ * Copyright (C) 2023 Romein van Buren
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+use Fisharebest\Webtrees\Elements\SourceMediaType;
+use Fisharebest\Webtrees\Http\RequestHandlers\AutoCompleteFolder;
+use Fisharebest\Webtrees\Http\RequestHandlers\ControlPanel;
+use Fisharebest\Webtrees\I18N;
+use Fisharebest\Webtrees\Media;
+use Fisharebest\Webtrees\Tree;
+use Psr\Http\Message\ServerRequestInterface;
+
+/**
+ * @var string                 $title
+ * @var ServerRequestInterface $request
+ * @var array<string,string>   $trees
+ * @var Tree                   $tree
+ * @var string                 $tree_id
+ * @var string                 $success
+ * @var array<Media>           $created_media
+ */
+
+$params = $request->getQueryParams();
+
+?>
+
+<h1><?= I18N::translate('Import media files from a folder') ?></h1>
+
+<?php if (isset($success)) : ?>
+    <div class="alert alert-success">
+        <p><?= $success ?></p>
+
+        <?php if (isset($created_media)) : ?>
+            <ul>
+                <?php foreach ($created_media as $object) : ?>
+                    <li>
+                        <a href="<?= e($object->url()) ?>" target="_blank">
+                            <?= $object->fullName() ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+
+<form method="get" name="tree_form">
+
+    <?php foreach ($params as $name => $value) : ?>
+        <?php if ($name != 'tree_id') : ?>
+            <input type="hidden" name="<?= e($name) ?>" value="<?= e($value) ?>" />
+        <?php endif; ?>
+    <?php endforeach; ?>
+
+    <div class="row mb-3">
+        <label class="col-form-label col-sm-2" for="folder">
+            <?= I18N::translate('Tree') ?>
+        </label>
+        <div class="col">
+            <select class="form-select" name="tree_id" id="tree_id">
+                <?php foreach ($trees as $id => $name) : ?>
+                    <option value="<?= e($id) ?>" <?= $id == $tree_id ? 'selected' : '' ?>>
+                        <?= e($name) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <small class="text-muted">
+                <?= I18N::translate('Select the tree you want to import media to.') ?>
+            </small>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="col btn btn-primary">
+                <?= view('icons/arrow-right') ?>
+                <?= I18N::translate('continue') ?>
+            </button>
+        </div>
+    </div>
+</form>
+
+<?php if (isset($tree)) : ?>
+    <form method="post">
+        <?= csrf_field() ?>
+
+        <div class="row mb-3">
+            <label class="col-form-label col-sm-2" for="folder">
+                <?= I18N::translate('Folder name on server') ?>
+            </label>
+            <div class="col-sm-10">
+                <input class="form-control folder-input" name="folder" placeholder="<?= I18N::translate('Folder') ?>" type="text" data-wt-autocomplete-url="<?= e(route(AutoCompleteFolder::class, ['tree' => $tree->name()])) ?>" autocomplete="off">
+                <small class="text-muted">
+                    <?= I18N::translate('This will import all files in the specified folder.') ?>
+                    <?= I18N::translate('Subdirectories are not included.') ?>
+                    <?= I18N::translate('If an included file is already exists as a media object in your tree, it will be skipped to prevent double media objects.') ?>
+                </small>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label class="col-form-label col-sm-2" for="title">
+                <?= I18N::translate('Title') ?>
+            </label>
+            <div class="col-sm-10">
+                <input class="form-control" id="title" name="title" type="text" />
+                <small class="text-muted">
+                    <?= I18N::translate('How to create distinct names for media files:', '<code>{index}</code>') ?>
+                    <ul>
+                        <li><?= I18N::translate('%s is replaced with the index of the file (e.g. 1).', '<code>{index}</code>') ?></li>
+                        <li><?= I18N::translate('%s is replaced with a counter (e.g. 000001).', '<code>{counter}</code>') ?></li>
+                        <li><?= I18N::translate('%s is replaced with the base name of the file (e.g. photo.jpg).', '<code>{basename}</code>') ?></li>
+                        <li><?= I18N::translate('%s is replaced with the name of the file (e.g. photo).', '<code>{filename}</code>') ?></li>
+                    </ul>
+                </small>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label class="col-form-label col-sm-2" for="type">
+                <?= I18N::translate('Media type') ?>
+            </label>
+            <div class="col-sm-10">
+                <?= (new SourceMediaType(''))->edit('type', 'type', '', $tree) ?>
+                <small class="text-muted">
+                    <?= I18N::translate('This will be added to all created media objects.') ?>
+                </small>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label class="col-form-label col-sm-2" for="note">
+                <?= I18N::translate('Note') ?>
+            </label>
+            <div class="col-sm-10">
+                <textarea class="form-control" id="note" name="note" rows="5" dir="auto"></textarea>
+                <small class="text-muted">
+                    <?= I18N::translate('This will be added to all created media objects.') ?>
+                </small>
+            </div>
+        </div>
+
+        <?= view('modals/restriction-fields') ?>
+
+        <button type="submit" class="btn btn-primary">
+            <?= view('icons/save') ?>
+            <?= I18N::translate('Import') ?>
+        </button>
+
+        <a href="<?= route(ControlPanel::class) ?>" class="btn btn-secondary">
+            <?= view('icons/cancel') ?>
+            <?= I18N::translate('cancel') ?>
+        </a>
+    </form>
+<?php endif; ?>
+
+<script>
+    webtrees.autocomplete('.folder-input');
+</script>
