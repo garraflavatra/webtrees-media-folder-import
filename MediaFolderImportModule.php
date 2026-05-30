@@ -137,7 +137,7 @@ class MediaFolderImportModule extends AbstractModule implements ModuleCustomInte
         $title = I18N::translate('Import media files from a folder');
 
         $trees = [];
-        foreach (app(TreeService::class)->all() as $tree) {
+        foreach (Registry::container()->get(TreeService::class)->all() as $tree) {
             assert($tree instanceof Tree);
             $trees[$tree->id()] = $tree->name();
         }
@@ -145,7 +145,7 @@ class MediaFolderImportModule extends AbstractModule implements ModuleCustomInte
         $tree = null;
         $tree_id = e($request->getQueryParams()['tree_id'] ?? '');
         if ($tree_id != '') {
-            $tree = app(TreeService::class)->find(intval($tree_id));
+            $tree = Registry::container()->get(TreeService::class)->find(intval($tree_id));
         }
 
         return [
@@ -167,8 +167,8 @@ class MediaFolderImportModule extends AbstractModule implements ModuleCustomInte
 
     public function postAdminAction(ServerRequestInterface $request): ResponseInterface
     {
-        $media_file_service      = app(MediaFileService::class);
-        $pending_changes_service = app(PendingChangesService::class);
+        $media_file_service      = Registry::container()->get(MediaFileService::class);
+        $pending_changes_service = Registry::container()->get(PendingChangesService::class);
 
         $template_data           = $this->getTemplateData($request);
         $tree                    = $template_data['tree'];
