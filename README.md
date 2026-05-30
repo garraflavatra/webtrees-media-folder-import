@@ -1,6 +1,6 @@
 # Webtrees media folder import module
 
-This webtrees module adds the possibility to import all media files in the same folder at once from within the admin panel.
+This module for webtrees 2.2 adds the possibility to import all media files in the same folder at once from within the admin panel.
 
 ## Installation
 
