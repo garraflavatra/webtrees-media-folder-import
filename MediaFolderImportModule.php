@@ -85,7 +85,7 @@ class MediaFolderImportModule extends AbstractModule implements ModuleCustomInte
      */
     public function customModuleVersion(): string
     {
-        return '1.0.0';
+        return '1.1.0';
     }
 
     /**
